@@ -1,8 +1,6 @@
 <script lang="ts">
-	import { page } from '$app/stores';	
 	import { error } from '@sveltejs/kit';
-	import { stringify } from 'postcss';
-	import { circIn } from 'svelte/easing';
+	import { list } from 'postcss';
 
 	type TLanguageCode = {
 		[key: string]: string;
@@ -22,12 +20,15 @@
 	};
 
 	type TMain = {
-		[key: string]: number,
-	}
-
-	type TList = {
-		dt: number,
-		main: TMain,
+		temp: number,
+		feels_like: number,
+		temp_min: number,
+		temp_max: number,
+		pressure: number,
+		sea_level: number,
+		grnd_level: number,
+		humidity: number,
+		temp_kf: number,
 	}
 
 	type TWeather = {
@@ -55,11 +56,9 @@
 		pod: string,
 	}
 
-	type TWeatherInfo = {
-		cod: string,
-		message: number,
-		cnt: number,
-		list: TList[],
+	type TList = {
+		dt: number,
+		main: TMain,
 		weather: TWeather[],
 		clouds: TClouds,
 		wind: TWind,
@@ -68,6 +67,30 @@
 		rain: TRain,
 		sys: TSys,
 		dt_txt: string
+	}
+
+	type TCoord = {
+		lat: number,
+		lon: number,
+	}
+
+	type TCity = {
+		id: number,
+		name: string,
+		coord: TCoord,
+	}
+
+	type TWeatherInfo = {
+		cod: string,
+		message: number,
+		cnt: number,
+		list: TList[],
+		city: TCity,
+		country: string,
+		population: number,
+		timezone: number,
+		sunrise: number,
+		sunset: number,
 	}
 
 
@@ -83,7 +106,7 @@ let locations: TLocation[] = [];
 
 let lat: number;
 let lon: number;
-let weatherInfo;
+let weatherInfo: TWeatherInfo;
 
 const fetchWeather = async (newLat: number, newLon: number) => {
 	if (typeof newLat !== 'number' && typeof newLon !== 'number') {
@@ -102,16 +125,6 @@ const fetchWeather = async (newLat: number, newLon: number) => {
 	return weatherInfo;
 }
 
-function formatTimestamp(timestamp: string) {
-    const date = new Date(timestamp);
-    const time = new Date(timestamp);
-    const formattedDate =  date.toLocaleDateString('en-US', {weekday: 'long', year: 'numeric', month: 'long', day: '2-digit'});
-    const formattedTime = time.toLocaleTimeString('en-US')
-    return {
-      formattedDate: formattedDate,
-      formattedTime: formattedTime
-    };
-  }
 </script>
 
 <main class="flex flex-col items-center mt-8">
@@ -140,10 +153,19 @@ function formatTimestamp(timestamp: string) {
 			</button>
 		{/each}
 	</div>
-	<button on:click={() => console.log(lat, lon)}>log coords</button>
 
+	{#if weatherInfo}
+	<h2>Here's your weather info for {weatherInfo.city.name} for the next five days</h2>
+	{#each weatherInfo.list as list}
 	<div>
-		<p></p>	
+		<p>{list.dt_txt}</p>
+		{#if list.weather[0].main === 'Clouds'}
+		<p>☁️</p>
+		{:else if list.weather[0].main === 'Sunny'}
+		<p>☀️</p>
+		{/if}
 	</div>
+	{/each}
+	{/if}
 
-</main>
+	</main>
