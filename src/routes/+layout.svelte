@@ -2,7 +2,7 @@
 	import '../app.postcss';
 	import Binder from './Binder.svelte';
 
-	let theme: string;
+	let theme: string = 'light';
 
 </script>
 

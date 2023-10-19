@@ -1,6 +1,7 @@
 :root {
   --fontColor: black;
   --bgColor: white;
+  --tempIcon: orangered;
 }
 
 body {

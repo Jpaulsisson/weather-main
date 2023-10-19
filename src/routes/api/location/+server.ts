@@ -13,5 +13,6 @@ export const GET: RequestHandler = async ({ url }) => {
     
   const data = await response.json();
 
+	if (!data) return json('no such city')
 	return json(data);
 };
