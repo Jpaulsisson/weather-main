@@ -1,101 +1,28 @@
 <script lang="ts">
 	import { error } from '@sveltejs/kit';
-	import { list } from 'postcss';
+	import { formatWeatherData } from './helpers';
+	import Temp from '../components/temp.svelte';
+	import Sun from '../components/sun.svelte';
+	import Wind from '../components/wind.svelte';
+	import Rain from '../components/rain.svelte';
+	import Snow from '../components/snow.svelte';
+	import Clouds from '../components/clouds.svelte';
+	import Search from '../components/search.svelte';
+	import type { 
+		TClouds, 
+		TCoord, 
+		TLanguageCode, 
+		TLocation,
+		TMain,
+		TWeather,
+		TWind,
+		TSys,
+		TWeatherInfo,
+		TFormattedWeather
+		} from './helpers';
 
-	type TLanguageCode = {
-		[key: string]: string;
-	};
-
-	type TLocation = {
-		name: string;
-		local_names: {
-			language_code: TLanguageCode[];
-			ascii: string;
-			feature_name: string;
-		};
-		lat: number;
-		lon: number;
-		country: string;
-		state?: string;
-	};
-
-	type TMain = {
-		temp: number,
-		feels_like: number,
-		temp_min: number,
-		temp_max: number,
-		pressure: number,
-		sea_level: number,
-		grnd_level: number,
-		humidity: number,
-		temp_kf: number,
-	}
-
-	type TWeather = {
-		id: number,
-		main: string,
-		description: string,
-		icon: string
-	}
-
-	type TClouds = {
-		all: number
-	}
-
-	type TWind = {
-		speed: number,
-		deg: number,
-		gust: number
-	}
-
-	type TRain = {
-		'3h': number
-	}
-
-	type TSys = {
-		pod: string,
-	}
-
-	type TList = {
-		dt: number,
-		main: TMain,
-		weather: TWeather[],
-		clouds: TClouds,
-		wind: TWind,
-		visibility: number,
-		pop: number,
-		rain: TRain,
-		sys: TSys,
-		dt_txt: string
-	}
-
-	type TCoord = {
-		lat: number,
-		lon: number,
-	}
-
-	type TCity = {
-		id: number,
-		name: string,
-		coord: TCoord,
-	}
-
-	type TWeatherInfo = {
-		cod: string,
-		message: number,
-		cnt: number,
-		list: TList[],
-		city: TCity,
-		country: string,
-		population: number,
-		timezone: number,
-		sunrise: number,
-		sunset: number,
-	}
-
-
-let city: string = '';
-let locations: TLocation[] = [];
+	let city: string = '';
+	let locations: TLocation[] = [];
 
 	export const fetchLocations = async () => {
 		const response = await fetch(`/api/location?city=${city}`);
@@ -104,30 +31,31 @@ let locations: TLocation[] = [];
 		return response;
 	};
 
-let lat: number;
-let lon: number;
-let weatherInfo: TWeatherInfo;
+	let lat: number;
+	let lon: number;
+	let weatherInfo: TFormattedWeather;
 
-const fetchWeather = async (newLat: number, newLon: number) => {
-	if (typeof newLat !== 'number' && typeof newLon !== 'number') {
-		return error;
-	}
+	const fetchWeather = async (newLat: number, newLon: number) => {
+		if (typeof newLat !== 'number' && typeof newLon !== 'number') {
+			return error;
+		}
 
-	lat = newLat;
-	lon = newLon;
+		lat = newLat;
+		lon = newLon;
 
-	const response = await fetch(`api/weather?lat=${lat}&lon=${lon}`)
+		const response = await fetch(`api/weather?lat=${lat}&lon=${lon}`);
 
-	weatherInfo = await response.json();
-	locations = [];
-
-	console.log(weatherInfo);
-	return weatherInfo;
-}
-
+		const initialWeatherInfo = await response.json();
+		locations = [];
+		const formatted = formatWeatherData(initialWeatherInfo);
+		weatherInfo = formatted;
+		console.log(weatherInfo);
+		
+		return weatherInfo;
+	};
 </script>
 
-<main class="flex flex-col items-center mt-8">
+<main class={`flex flex-col items-center mt-8`}>
 	<h1 class="text-4xl mb-4">WeatherMain</h1>
 	<div class="flex">
 		<input
@@ -136,14 +64,14 @@ const fetchWeather = async (newLat: number, newLon: number) => {
 			name="city"
 			id="city"
 			bind:value={city}
-			placeholder="Search by city name"
+			placeholder="Search by city"
 		/>
-		<button class="border-[1px] border-black p-2 rounded-sm" on:click={() => fetchLocations()}
-			>Find my city</button
-		>
+		<button class="border-[1px] border-black p-2 rounded-sm" on:click={() => fetchLocations()}>
+			<Search />
+		</button>
 	</div>
-	<div class="flex flex-col">
-		{#each locations as {name, state, country, lat, lon}}
+	<div class={`flex flex-col`}>
+		{#each locations as { name, state, country, lat, lon }}
 			<button on:click={() => fetchWeather(lat, lon)} class="flex gap-2 font-bold">
 				<h2>{name},</h2>
 				{#if state}
@@ -155,17 +83,18 @@ const fetchWeather = async (newLat: number, newLon: number) => {
 	</div>
 
 	{#if weatherInfo}
-	<h2>Here's your weather info for {weatherInfo.city.name} for the next five days</h2>
-	{#each weatherInfo.list as list}
-	<div>
-		<p>{list.dt_txt}</p>
-		{#if list.weather[0].main === 'Clouds'}
-		<p>☁️</p>
-		{:else if list.weather[0].main === 'Sunny'}
-		<p>☀️</p>
-		{/if}
-	</div>
-	{/each}
+		<div>The Weather in {weatherInfo.locale} is:</div>
+		<div class="flex"><Temp />{weatherInfo.currentTemp}</div>
+		<div class="flex"><Sun /> {weatherInfo.currentWeather.weather}</div>
+		<div>-- {weatherInfo.currentWeather.desc}</div>
+		<div>Humidity: {weatherInfo.humidity}%</div>
+		<div>Pressure: {weatherInfo.pressure}mbar</div>
+		<div>Going down to: {weatherInfo.tempVariance.low}</div>
+		<div>And up to: {weatherInfo.tempVariance.high}</div>
+		<div>As of {weatherInfo.time}</div>
+		<div>With visibility at: {weatherInfo.visibility}</div>
+		<div class="flex"><Wind /> {weatherInfo.wind.direction}</div>
+		<div>at {weatherInfo.wind.speed}mph</div>
+		<div>and gusts up to {weatherInfo.wind.gust}mph</div>
 	{/if}
-
-	</main>
+</main>

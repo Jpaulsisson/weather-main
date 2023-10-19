@@ -1,12 +1,14 @@
 <script lang="ts">
 	import '../app.postcss';
-	import { setContext } from 'svelte';
-	import { writable } from 'svelte/store';
+	import Binder from './Binder.svelte';
 
-	export const lat = writable(0);
-	export const lon = writable(0);
+	let theme: string;
 
-	
 </script>
 
+<svelte:head>
+	<link rel="stylesheet" href="src/styles/themes/{theme}-theme.css">
+</svelte:head>
+
+<Binder bind:themeName={theme}/>
 <slot />
