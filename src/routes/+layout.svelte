@@ -2,12 +2,16 @@
 	import '../app.postcss';
 	import Binder from './Binder.svelte';
 
-	let theme: string = 'light';
+	let theme: string = 'dark';
 
 </script>
 
 <svelte:head>
-	<link rel="stylesheet" href="src/styles/themes/{theme}-theme.css">
+	{#if theme === 'light'}
+	<link rel="stylesheet" href="/styles/themes/light-theme.css">
+	{:else}
+	<link rel="stylesheet" href="/styles/themes/dark-theme.css">
+	{/if}
 </svelte:head>
 
 <Binder bind:themeName={theme}/>
