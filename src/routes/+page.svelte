@@ -14,18 +14,7 @@
 	import Sand from '../components/sand.svelte';
 	import Tornado from '../components/tornado.svelte';
 	import Pressure from '../components/pressure.svelte';
-	import type { 
-		TClouds, 
-		TCoord, 
-		TLanguageCode, 
-		TLocation,
-		TMain,
-		TWeather,
-		TWind,
-		TSys,
-		TWeatherInfo,
-		TFormattedWeather
-		} from './helpers';
+	import type { TLocation, TFormattedWeather } from './helpers';
 
 	let city: string = '';
 	let locations: TLocation[] = [];
