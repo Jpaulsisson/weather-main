@@ -2,6 +2,8 @@
   --fontColor: white;
   --bgColor: #111;
   --tempIcon: rgb(243, 186, 54);
+  --hazeIcon: rgb(171, 180, 180);
+  --sandIcon: rgb(245, 221, 188);
 }
 
 body {

@@ -9,6 +9,11 @@
 	import Clouds from '../components/clouds.svelte';
 	import Search from '../components/search.svelte';
 	import Humid from '../components/humid.svelte';
+	import Storm from '../components/storm.svelte';
+	import Haze from '../components/haze.svelte';
+	import Sand from '../components/sand.svelte';
+	import Tornado from '../components/tornado.svelte';
+	import Pressure from '../components/pressure.svelte';
 	import type { 
 		TClouds, 
 		TCoord, 
@@ -35,29 +40,7 @@
 
 	let lat: number;
 	let lon: number;
-	// let weatherInfo: TFormattedWeather | null;
-
-	let weatherInfo = {
-		time: 0,
-    locale: 'string',
-    currentTemp: 75,
-    tempVariance: {
-        low: 72,
-        high: 78,
-    },
-    humidity: 80,
-    pressure: 1000,
-    visibility: 1000,
-    currentWeather: {
-        weather: 'Clouds',
-        desc: 'moderate clouds',
-    },
-    wind: {
-        direction: 135,
-        speed: 20,
-        gust: 25,
-    },
-}
+	let weatherInfo: TFormattedWeather | null;
 
 	const fetchWeather = async (newLat: number, newLon: number) => {
 		if (typeof newLat !== 'number' && typeof newLon !== 'number') {
@@ -122,20 +105,78 @@
 
 	<!-- weather info -->
 	{#if weatherInfo}
-		<div class="w-full px-6 md:px-20">
+		<div class="w-full px-6 md:px-20 flex flex-col gap-10">
 			<!-- main temperature -->
 			<div class='flex items-baseline'>
 				<Temp />
 				<h2 class="text-8xl text-end">
 					{Math.round(weatherInfo.currentTemp)}˚
 				</h2>
+				<span class="text-xs uppercase tracking-widest">{weatherInfo.locale}</span>
 			</div>
 			<!-- current weather conditions -->
-			<div class="flex gap-3 text-lg md:text-2xl items-center">
-				{#if weatherInfo.currentWeather.weather === 'Clouds'}
-				<Clouds/>
+			<div class="flex gap-3 text-2xl md:text-3xl items-center">
+				{#if weatherInfo.currentWeather.weather === 'Thunderstorm'}
+				<Storm />
+				<p>Thunderstorms</p>
+				{:else if weatherInfo.currentWeather.weather === 'Drizzle'}
+				<Rain />
+				<p>Drizzly</p>
+				{:else if weatherInfo.currentWeather.weather === 'Rain'}
+				<Rain />
+				<p>Raining</p>
+				{:else if weatherInfo.currentWeather.weather === 'Snow'}
+				<Snow />
+				<p>Snowing</p>
+				{:else if weatherInfo.currentWeather.weather === 'Mist'}
+				<Haze />
+				<p>Misty</p>
+				{:else if weatherInfo.currentWeather.weather === 'Smoke'}
+				<Haze />
+				<p>Smoky</p>
+				{:else if weatherInfo.currentWeather.weather === 'Haze'}
+				<Haze />
+				<p>Hazy</p>
+				{:else if weatherInfo.currentWeather.weather === 'Dust'}
+				<Sand />
+				<p>Dusty</p>
+				{:else if weatherInfo.currentWeather.weather === 'Fog'}
+				<Haze />
+				<p>Foggy</p>
+				{:else if weatherInfo.currentWeather.weather === 'Sand'}
+				<Sand />
+				<p>Sandy</p>
+				{:else if weatherInfo.currentWeather.weather === 'Ash'}
+				<Haze />
+				<p>Ashey</p>
+				{:else if weatherInfo.currentWeather.weather === 'Squall'}
+				<Wind />
+				<p>Squalls</p>
+				{:else if weatherInfo.currentWeather.weather === 'Tornado'}
+				<Tornado />
+				<p>Tornado</p>
+				{:else if weatherInfo.currentWeather.weather === 'Clear'}
+				<Sun />
+				<p>Clear</p>
+				{:else if weatherInfo.currentWeather.weather === 'Clouds'}
+				<Clouds />
 				<p>Cloudy</p>
 				{/if}
+			</div>
+			<!-- humidity percentage -->
+			<div class="flex gap-3 text-xl md:text-2xl items-center">
+				<Humid />
+				<p>{weatherInfo.humidity}%</p>
+			</div>
+			<!-- pressure -->
+			<div class="flex gap-3 text-xl md:text-2xl items-center">
+				<Pressure />
+				<p>{weatherInfo.pressure}<span class="text-xs">mbar</span></p>
+			</div>
+			<!-- wind -->
+			<div class="flex gap-3 text-xl md:text-2xl items-center">
+				<Wind />
+				<p>{weatherInfo.wind.direction} {weatherInfo.wind.speed}<span class="text-xs">/mph</span></p>
 			</div>
 		</div>
 	{/if}

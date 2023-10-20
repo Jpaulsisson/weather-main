@@ -2,6 +2,8 @@
   --fontColor: black;
   --bgColor: white;
   --tempIcon: orangered;
+  --hazeIcon: rgb(127, 132, 132);
+  --sandIcon: rgb(216, 187, 147);
 }
 
 body {
