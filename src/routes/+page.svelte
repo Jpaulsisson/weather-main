@@ -15,10 +15,13 @@
 	import Tornado from '../components/tornado.svelte';
 	import Pressure from '../components/pressure.svelte';
 	import type { TLocation, TFormattedWeather } from './helpers';
+	import { onMount } from 'svelte';
 
+// variables for geolocation api call
 	let city: string = '';
 	let locations: TLocation[] = [];
 
+// fetch geolocation of cities matching user input
 	export const fetchLocations = async () => {
 		const response = await fetch(`/api/location?city=${city}`);
 		locations = await response.json();
@@ -27,17 +30,21 @@
 		return response;
 	};
 
+// variables for weather api call
 	let lat: number;
 	let lon: number;
 	let weatherInfo: TFormattedWeather | null;
 
+// fetch weather information with data from geolocation call
 	const fetchWeather = async (newLat: number, newLon: number) => {
 		if (typeof newLat !== 'number' && typeof newLon !== 'number') {
 			return error;
 		}
-
+		// assign new geolocation coords to state variables
 		lat = newLat;
 		lon = newLon;
+		localStorage.setItem('lat', String(newLat));
+		localStorage.setItem('lon', String(newLon));
 
 		const response = await fetch(`api/weather?lat=${lat}&lon=${lon}`);
 
@@ -45,9 +52,25 @@
 		locations = [];
 		const formatted = formatWeatherData(initialWeatherInfo);
 		weatherInfo = formatted;
-		console.log(weatherInfo)
+
 		return weatherInfo;
 	};
+
+// Display user's last search as when revisiting OR London as a default
+	onMount(() => {
+		let startingLat = Number(localStorage.getItem('lat'));
+		let startingLon = Number(localStorage.getItem('lon'));
+
+		if (!startingLat || !startingLon) {
+			startingLat = 51.5073219;
+			startingLon = -0.1276474;
+		};
+		
+		fetchWeather(startingLat, startingLon);
+
+		return;
+	})
+
 </script>
 
 <main class={`flex flex-col items-center mt-8`}>
@@ -71,7 +94,7 @@
 	{:else}
 	<div class="mb-6">
 		<button class="border-[1px] border-[var(--fontColor)] p-1 rounded-sm text-sm text-[var(--bgColor)] bg-[var(--fontColor)]" on:click={() => weatherInfo = null}>
-			New search
+			Find your city
 		</button>
 	</div>
 	{/if}
