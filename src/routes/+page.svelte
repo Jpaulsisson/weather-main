@@ -55,7 +55,7 @@
 
 	<!-- location search bar -->
 	{#if !weatherInfo}
-	<div class="flex mb-6">
+	<form class="flex mb-6" on:submit|preventDefault={() => fetchLocations()}>
 		<input
 			class="border-[1px] border-[var(--fontColor)] p-2 rounded-sm text-[var(--fontColor)] bg-[var(--bgColor)] focus-within:outline-stone-500"
 			type="text"
@@ -64,10 +64,10 @@
 			bind:value={city}
 			placeholder="Search by city"
 		/>
-		<button class="border-[1px] border-[var(--fontColor)] p-2 rounded-sm bg-emerald-400" on:click={() => fetchLocations()}>
+		<button class="border-[1px] border-[var(--fontColor)] p-2 rounded-sm bg-emerald-400" type="submit">
 			<Search />
 		</button>
-	</div>
+	</form>
 	{:else}
 	<div class="mb-6">
 		<button class="border-[1px] border-[var(--fontColor)] p-1 rounded-sm text-sm text-[var(--bgColor)] bg-[var(--fontColor)]" on:click={() => weatherInfo = null}>
