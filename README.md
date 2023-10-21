@@ -28,11 +28,11 @@
 
 ### Tech I used:
 
-![HTML5](https://github.com/Jpaulsisson/blackjack/assets/107195036/3a5a5be0-0d6b-4600-9f58-1eb643dbe6a9)
-![CSS3](https://github.com/Jpaulsisson/blackjack/assets/107195036/8f06e450-42f8-4725-b9e9-3edf8d30d7cd)
-![JS](https://github.com/Jpaulsisson/blackjack/assets/107195036/cf03844b-6e3e-4865-9ace-4de585ddf07d)
-<img src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Svelte_Logo.svg" width="100" height="90"/>
-<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Tailwind_CSS_Logo.svg/128px-Tailwind_CSS_Logo.svg.png' width="120" height="80" />
+<img src="https://www.w3.org/html/logo/badge/html5-badge-h-solo.png" alt="HTML" width="50" height="50" />
+<img src="https://upload.wikimedia.org/wikipedia/commons/6/62/CSS3_logo.svg" alt="CSS3" width="50" height="50" />
+<img src="https://upload.wikimedia.org/wikipedia/commons/4/4c/Typescript_logo_2020.svg" alt="TypeScript" width="50" height="50" />
+<img src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Svelte_Logo.svg" alt="Svelte" width="50" height="50"/>
+<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Tailwind_CSS_Logo.svg/128px-Tailwind_CSS_Logo.svg.png' alt="Tailwind" width="55" height="50" />
 
 ---
 
