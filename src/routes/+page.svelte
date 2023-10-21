@@ -98,7 +98,7 @@
 		</button>
 	</div>
 	{/if}
-
+	
 	<!-- locations -->
 	{#if locations.length > 0}
 		<div class={`flex flex-col gap-3 p-2`}>
